@@ -92,14 +92,14 @@ git init
 git add .
 
 #提交到main分支
-git commit -m 'first commit demo'
+git commit -m 'firstcommit'  #-m后面的名字带空格可能会报错
 #指定本地分支
 git branch -M main
 
 #github创建好远程仓库后
 git remote add origin git@github.com:fireworkseasycold/airec.git
 #推送到远程分支main
-git push -u origin main
+git push -u origin main  #成功后出现branch 'main' set up to track 'origin/main'.使用-u是为了在第一次推送时候将本地main分支和远程main分支联系起来，不会推送到远程新的main分支；之后可以只用git push origin main
 另外
 当git add 某个文件到缓存区，还没有git commit 但是你不想这个文件了
 就可以使用git rm命令，两种选择：
@@ -112,7 +112,13 @@ git删除已经add的文件的两种方法：
 比如我要删除bin下面的已经加入缓存的所有文件，那我需要执行以下命令：
 git rm -r --cached 废弃/
 
-使用.gitignore
+删除文件
+（1）git rm test.txt
+（2） git commit -m 'del_test.txt'
+（3）git push origin main
+
+使用.gitignore来排除不如要的，比如我新建个名为废弃的文件夹
+git status命令是用来查看当前文件夹下的文件状态的
 
 ## 五.说明
 
