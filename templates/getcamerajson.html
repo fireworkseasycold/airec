@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>拍照上传demo(json)</title>
+
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}" type="text/javascript"></script>
+</head>
+<body>
+<input type="button" value="打开摄像头" onclick="openCamera()">
+<input type="button" value="拍照" onclick="takePicture()">
+<input type="button" value="关闭摄像头" onclick="closeCamera()">
+<br>  <!--  显示摄像头实时拍摄的画面  -->
+<video id="myVideo" width="500px" height="500px" autoplay="autoplay">
+</video>  <!--  显示摄像头拍照的照片  -->
+<canvas id="myCanvas" width="500px" height="500px"></canvas>
+<div id="backimgdata">图片数据格式：data:image/png;base64,xxxxxxxxx</div>
+显示后端json返回图片<img src="" id="backimg">
+
+<script type="text/javascript">//打开摄像头
+function openCamera(){
+    var param={ video:{width:500,height:500},
+    audio:false};
+    //摄像头拍摄参数 audio:false 关闭mic
+    var myVideo = document.getElementById('myVideo');//获得网页上的myVideo组件      用来显示实时摄像头画面
+    var myCamera = navigator.mediaDevices.getUserMedia(param);//获得摄像头
+    myCamera.then((stream) => {
+        myVideo.srcObject = stream;//myVideo组件显示的资源来自摄像头数据
+        myVideo.play();//myVeid组件播放视频
+        });
+    }
+//   拍照并异步上传
+function takePicture() {
+    var myVideo = document.getElementById('myVideo');//获得myVideo组件
+    var myCanvas = document.getElementById('myCanvas');//获得myCancas组件      显示拍摄的照片
+    var graphics = myCanvas.getContext('2d');//graphics画笔      往canvas中间画图
+    graphics.drawImage(myVideo,0,0,500,500);//myVideo组件当前的画面      画到myCanvas组件      成为图片
+    var picture = document.getElementById('myCanvas').toDataURL('image/jpeg');
+    //从myCanvas组件中间   获得拍摄的照片         jpeg是图片格式
+    //上传图片到服务器　　
+    $.ajax({
+        url:"http://localhost:8000/face/receivecamerajson",
+        type:"post",
+        contentType:'application/json;charset=utf-8',
+        data:JSON.stringify({"camera":picture}),  //json
+        //dataType："json", //如果设置dataType："json"，则后台的返回值类型必须是Json格式的对象；如果没有设置此属性，服务器端返回什么数据类型，就是相应类型格式的字符串
+        success:function (mes) {
+            alert('上传成功')
+            $("#backimgdata").text(mes.data) //使用返回的文本数据来修改，速度慢,如果是object，需要JSON.stringify(mes))来object转字符串
+            //document.getElementById('backimg').src=mes.data //修改返回的图片414 (存在Request-URI Too Long)
+        }
+    });//上传Ajax结束
+}//拍照方法结束
+
+//   关闭摄像头
+function closeCamera() {
+    var stream = document.getElementById('myVideo').srcObject;//获得myVideo的资源
+    var tracks = stream.getTracks();
+    tracks.forEach(function(track)   {
+    track.stop();//关闭
+    });
+    document.getElementById('myVideo').srcObject   =   null;
+    //清除myVideo中间的资源      myVideo中间不显示任何内容
+}
+</script>
+
+
+</body>
+
+
+</html>

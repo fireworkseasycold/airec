@@ -1,0 +1,3 @@
+LoadFile "F:/Anaconda3/envs/airec/python37.dll"
+LoadModule wsgi_module "F:/Anaconda3/envs/airec/lib/site-packages/mod_wsgi/server/mod_wsgi.pyd"
+WSGIPythonHome "F:/Anaconda3/envs/airec"

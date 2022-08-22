@@ -1,0 +1,7 @@
+div.hr {
+    height: 3px;
+    background: #818080;
+}
+div.hr hr {
+    display: none;
+}
